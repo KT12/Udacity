@@ -75,6 +75,7 @@ class LearningAgent(Agent):
         ### possible random choice if epsilon non-zero
         if random.random() < self.epsilon:
             action = random.choice(self.env.valid_actions)
+            print('*********** Random action!')
         ### Max action for current state in q table
         else:
             action = max(self.q[self.state], key=self.q[self.state].get)
@@ -84,7 +85,12 @@ class LearningAgent(Agent):
         self.reward += reward
         if reward < 0:
             self.penalties += 1.0
+            print('*********** Penalized action')
+            print('State: ',self.state)
+            print('Q: ', self.q[self.state])
+            print('Action: ', action)
         self.updates += 1.0
+        
         
         # TODO: Learn policy based on state, action, reward
         # Need both state_p and action_p
