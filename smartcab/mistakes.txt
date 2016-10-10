@@ -1,0 +1,146 @@
+Penalties
+
+Simulator.run(): Trial 99
+
+*********** Penalized action
+('State: ', ('red', None, 'forward', 'forward'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 96
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('red', None, None, 'forward'))
+('Q: ', {'forward': -0.9952, 'right': -0.295544467469186, None: 0.0, 'left': -0.952})
+('Action: ', 'left')
+
+Simulator.run(): Trial 92
+
+*********** Penalized action
+('State: ', ('red', None, 'left', 'forward'))
+('Q: ', {'forward': -0.52, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'right')
+
+*********** Penalized action
+('State: ', ('red', None, 'forward', 'right'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 100
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('red', None, None, 'forward'))
+('Q: ', {'forward': -0.52, 'right': -0.06999999999999984, None: 0.0, 'left': -0.999952})
+('Action: ', 'forward')
+
+
+Simulator.run(): Trial 92
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('red', None, None, 'forward'))
+('Q: ', {'forward': -0.52, 'right': -0.47573919672338605, None: 0.0, 'left': -0.9952})
+('Action: ', 'right')
+
+Simulator.run(): Trial 93
+
+*********** Penalized action
+('State: ', ('red', None, 'forward', 'right'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 95
+
+*********** Penalized action
+('State: ', ('green', None, 'left', 'left'))
+('Q: ', {'forward': -0.25, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'right')
+
+
+Simulator.run(): Trial 92
+
+*********** Penalized action
+('State: ', ('red', None, 'right', 'forward'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': -0.52})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 95
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('red', None, None, 'forward'))
+('Q: ', {'forward': -0.952, 'right': -0.31614099724698685, None: 0.0, 'left': -0.52})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 99
+
+*********** Penalized action
+('State: ', ('red', None, 'left', 'forward'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+('Total reward: ', 2249.5)
+
+*********** Penalized action
+('State: ', ('red', None, 'left', 'forward'))
+('Q: ', {'forward': -0.52, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'right')
+
+Simulator.run(): Trial 97
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('green', None, None, 'forward'))
+('Q: ', {'forward': 2.1834980229497263, 'right': -0.29788393750249803, None: 0.21800198385087213, 'left': -0.2799920998343014})
+('Action: ', 'right')
+
+*********** Penalized action
+('State: ', ('green', None, 'left', 'left'))
+('Q: ', {'forward': -0.0680540362696167, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'right')
+
+*********** Penalized action
+('State: ', ('green', None, 'right', 'left'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('green', None, None, 'right'))
+('Q: ', {'forward': -0.06999999999999984, 'right': 2.22109474976714, None: 2, 'left': 2})
+('Action: ', 'left')
+
+Simulator.run(): Trial 94
+
+*********** Penalized action
+('State: ', ('red', None, 'forward', 'left'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 97
+
+*********** Penalized action
+('State: ', ('red', 'forward', None, 'forward'))
+('Q: ', {'forward': -0.52, 'right': 2, None: 2, 'left': -0.52})
+('Action: ', 'right')
+
+*********** Penalized action
+('State: ', ('red', None, 'left', 'left'))
+('Q: ', {'forward': 2, 'right': 2, None: 2, 'left': 2})
+('Action: ', 'forward')
+
+Simulator.run(): Trial 99
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('green', None, None, 'left'))
+('Q: ', {'forward': -0.27699999999999997, 'right': -0.06999999999999984, None: 0.3799999999999999, 'left': 2.0000021684789138})
+('Action: ', 'forward')
+
+*********** Random action!
+*********** Penalized action
+('State: ', ('red', None, None, 'forward'))
+('Q: ', {'forward': -0.9772000000000001, 'right': -0.06999999999999984, None: 0.0, 'left': -0.952})
+('Action: ', 'forward')
+
