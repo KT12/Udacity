@@ -88,3 +88,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
+#Data files
+ud_370/notMNIST.pickle
+ud_370/notMNIST_large.tar.gz
+ud_370/notMNIST_large/
+ud_370/notMNIST_small.tar.gz
+ud_370/notMNIST_small/
+
+
