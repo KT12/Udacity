@@ -32,5 +32,6 @@ Word2vec allows semantic and syntactic analogies to be expressed in math.
 [C-BOW paper](https://arxiv.org/pdf/1411.2738v3.pdf)
 [Word Embedding Presentation](https://www.youtube.com/watch?v=D-ekE-Wlcds)
 [Word2vec using Gensim](https://codesachin.wordpress.com/2015/10/09/generating-a-word2vec-model-from-a-block-of-text-using-gensim-python/)
+[Blog post on Skip Grams](http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/)
 
 Notes taken by [@KT12](https://github.com/KT12)
