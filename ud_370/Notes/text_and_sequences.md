@@ -27,3 +27,7 @@ How to predict words?  Take embedding and run through linear model.  Computing s
 
 #### Analgoies
 Word2vec allows semantic and syntactic analogies to be expressed in math.
+
+##### Additional resources outside of the lecture
+[C-BOW paper](https://arxiv.org/pdf/1411.2738v3.pdf)
+[Word Embedding Presentation](https://www.youtube.com/watch?v=D-ekE-Wlcds)
