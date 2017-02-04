@@ -95,4 +95,5 @@ ud_370/notMNIST_large/
 ud_370/notMNIST_small.tar.gz
 ud_370/notMNIST_small/
 
+*.zip
 
