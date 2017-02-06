@@ -57,4 +57,41 @@ graph = tf.Graph()
 			(batch_size, image_size, image_size, num_channels))
 		tf_train_labels  = tf.placeholder(tf.float32, shape=
 			(batch_size, num_labels))
-		
+		tf_valid_dataset = tf.constant(valid_dataset)
+		tf_test_dataset  = tf.constant(test_dataset)
+
+		# Variables
+		layer1_weights = tf.Variable(tf.truncated_normal(
+			[patch_size, patch_size, num_channels, depth], 
+			stddev=0.1))
+		layer1_biases = tf.Variable(tf.zeros([depth]))
+
+		layer2_weights = tf.Variable(tf.truncated_normal(
+			[patch_size, patch_size, depth, depth], stddev=0.1))
+		layer2_biases = tf.Variable(tf.constant(1.0, shape=[depth]))
+
+		layer3_weights = tf.Variable(tf.truncated_normal(
+			[image_size // 4 * image_size // 4 * depth, num_hidden], stddev=0.1))
+		layer3_biases = tf.Variable(tf.constant(1.0, shape=[num_hidden]))
+
+		layer4_weights = tf.Variable(tf.truncated_normal(
+			[num_hidden, num_labels], stddev=0.1))
+		layer4_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
+
+		#Model
+		def model(data):
+			conv_1 = tf.nn.conv2d(data, layer1_weights, [1, 2, 2, 1],
+				padding='SAME')
+			hidden_1 = tf.nn.relu(conv_1 + layer1_biases)
+
+			conv_2 = tf.nn.conv2d(hidden_1, layer2_weights, 
+				[1, 2, 2, 1], padding='SAME')
+			hidden_2 = tf.nn.relu(conv_2 + layer2_biases)
+
+			shape = hidden_2.get_shape().as_list()
+			rehsape = tf.reshape(hidden_2, [shape[0], shape[1] * shape[2] *
+					shape[3]])
+
+			hidden_3 = tf.nn.relu(tf.matmul(reshape, layer3_weights) + layer3_biases)
+
+			return tf.matmul(hidden_3, layer4_weights) + layer4_biases
