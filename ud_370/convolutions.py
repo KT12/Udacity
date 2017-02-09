@@ -261,3 +261,9 @@ with graph.as_default():
     layer4_weights = tf.Variable(tf.truncated_normal([num_hidden, num_labels], stddev=0.1))
     layer4_biases  = tf.Variable(tf.constant(1.0, shape=[num_labels]))
   
+    def model(data):
+
+    	conv_1 = tf.nn.conv2d(data, layer1_weights, [1, 1, 1, 1], padding='SAME')
+    	hidden_1 = tf.nn.relu(conv_1 + layer1_biases)
+    	max_pool_1 = tf.nn.max_pool(hidden_1, ksize=[1, 2, 2, 1], 
+    		strides=[1, 2, 2, 1], padding='SAME')
