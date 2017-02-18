@@ -206,3 +206,62 @@ words = [reverse_dictionary[i] for i in range(1, num_points + 1)]
 plot(two_d_embeddings, words)
 
 
+# Implement CBOW
+
+data_index = 0
+
+def generate_batch(batch_size, bag_window):
+	global data_index
+	span = 2 * bag_window + 1
+	batch = np.ndarray(shape=(batch_size, span - 1), dtype=np.int32)
+	labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
+	buffer = collections.deque(maxlen=span)
+	for _ in range(span):
+		buffer.append(data[data_index])
+		data_index = (data_index + 1) % len(data)
+	for i in range(batch_size):
+		buffer_list = list(buffer)
+		labels[i, 0] = buffer_list.pop(bag_window)
+		batch[i] = buffer_list
+		buffer.append(data[data_index])
+		data_index = (data_index + 1) % len(data)
+	return batch, labels
+
+print('data:', [reverse_dictionary[di]] for di in data[:16])
+
+for bag_window in [1, 2]:
+	data_index = 0
+	batch, labels = generate_batch(batch_size=4, bag_window=bag_window)
+	print('\nwith bag_window = %d:' % (bag_window))
+	print('		batch:', [[reverse_dictionary[w] for w in bi] for bi in batch])
+	print('		labels:', [reverse_dictionary[li] for li in labels.rehape(4)])
+
+
+batch_size = 128
+embedding_size = 128 #dim of embedding vector
+bag_window = 2
+valid_size = 16
+valid_window = 100
+valid_examples = np.array(random.sample(range(valid_window), valid_size))
+num_sampled = 64
+
+graph = tf.Graph()
+
+with graph.as_default(), tf.device('/cpu:0'):
+
+	# Set random seed 
+	tf.set_random_seed(1)
+
+	# Input data
+	train_dataset = tf.placeholder(tf.int32, shape=[batch_size, bag_window * 2])
+	train_labels  = tf.placeholder(tf.int32, shape=[batch_size, 1])
+	valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
+
+	# Variables
+	embeddings = tf.Variable(tf.random_uniform([vocabulary_size, embedding_size],
+		-1.0, 1.0))
+	softmax_weights = tf.Variable(tf.truncated_normal([vocabulary_size,
+		embedding_size], stddev=1.0 / math.sqrt(embedding_size)))
+	softmax_biases 	= tf.Variable(tf.zeros([vocabulary_size]))
+
+	
