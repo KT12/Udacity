@@ -274,3 +274,57 @@ with graph.as_default(), tf.device('/cpu:0'):
 
 	# Optimizer
 	optimizer = tf.train.AdagradOptimizer(1.0).minimize(loss)
+
+	# Compute cosine similarity
+	norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), 1, keep_dims=True))
+	normalized_embeddings = embeddings / norm
+	valid_embeddings = tf.nn.embedding_lookup(normalized_embeddings, valid_dataset)
+	similarity = tf.matmul(valid_embeddings, tf.transpose(normalized_embeddings))
+
+num_steps = 100001
+
+with tf.Session(graph=graph) as session:
+	tf.initialize_all_variables().run()
+	print('Initialized')
+	average_loss = 0
+	for step in range(num_steps):
+		batch_data, batch_labels = generate_batch(batch_size, bag_window)
+		feed_dict = {train_dataset : batch_data, train_labels : batch_labels}
+		_, l = session.run([optimizer, loss], feed_dict=feed_dict)
+		average_loss += l
+		if step % 2000 == 0:
+			if step > 0:
+				average_loss = average_loss / 2000
+			# avg loss is est over last 2000 batches
+			print('Average loss at step %d: %f' % (step, average_loss))
+			average_loss = 0
+		if step % 10000 == 0:
+			sim = similarity.eval()
+			for i in range(valid_size):
+				valid_word = reverse_dictionary[valid_examples[i]]
+				top_k = 8
+				nearest = (-sim[i, :]).argsort()[1:top_k+1]
+				log = 'Nearest to %s:' % valid_word
+				for k in range(top_k):
+					close_word = reverse_dictionary[nearest[k]]
+					log = '%s %s,' % (log, close_word)
+				print(log)
+	final_embeddings = normalized_embeddings.eval()
+
+num_points = 400
+
+tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
+two_d_embeddings = tsne.fit_transform(final_embeddings[1:num_points+1, :])
+
+def plot(embeddings, labels):
+	assert embeddings.shape[0] >= len(labels), 'More labels than embeddings'
+	pylab.figure(figsize=(15,15)) # in inches, what?
+	for i, label in enumerate(labels):
+		x, y = embeddings[i,:]
+		pylab.scatter(x, y)
+		pylab.annotate(label, xy=(x,y), xytext=(5,2), textcoords='offset points',
+			ha='right', va='bottom')
+	pylab.show()
+
+words = [reverse_dictionary[i] for i in range(1, num_points+1)]
+plot(two_d_embeddings, words)
