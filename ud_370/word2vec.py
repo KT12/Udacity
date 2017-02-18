@@ -264,4 +264,13 @@ with graph.as_default(), tf.device('/cpu:0'):
 		embedding_size], stddev=1.0 / math.sqrt(embedding_size)))
 	softmax_biases 	= tf.Variable(tf.zeros([vocabulary_size]))
 
-	
+	# Model
+	# Look up embeddings for inputs
+	embeds = tf.nn.embedding_lookup(embeddings, train_dataset)
+	# Compute the softmax loss using a sample of the neg labels each time
+	loss = tf.reduce_mean(tf.nn.sampled_softmax_loss(softmax_weights,
+		softmax_biases, tf.reduce_sum(embeds, 1), train_labels, num_sampled,
+		vocabulary_size))
+
+	# Optimizer
+	optimizer = tf.train.AdagradOptimizer(1.0).minimize(loss)
