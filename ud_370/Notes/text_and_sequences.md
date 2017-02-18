@@ -31,7 +31,39 @@ Word2vec allows semantic and syntactic analogies to be expressed in math.
 ##### Additional resources outside of the lecture
 [C-BOW paper](https://arxiv.org/pdf/1411.2738v3.pdf)
 [Word Embedding Presentation](https://www.youtube.com/watch?v=D-ekE-Wlcds)
-[Word2vec using Gensim](https://codesachin.wordpress.com/2015/10/09/generating-a-word2vec-model-from-a-block-of-text-using-gensim-python/)
+[Word2vec using Gensim](https://codesachin.wordpress.com/2015/10/09/generating-a-word2vec-model-from-a-block-of-text-using-gensim-Writes input `X` into python/)
 [Blog post on Skip Grams](http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/)
+
+#### Sequences of Various Length
+Need good model trained on a lot of text.
+Question, how do you deal with sequences of varying length?
+
+#### RNN's
+Covnet uses shared parameters over space to extract patterns from an image.  Recurrent networks do this over time in stead of space.  If the sequence is reasonably stationary, can use the same classifier at each point in time.  However, also want to take into account the past.  Can use the state of the previous classifier as a summary of what happened before.  Instead of using thousands of nodes, have input at each step and recurrent connection from the past.
+
+#### Backprop through time
+Need to back prop through time to beginning of the sequence (or what is affordable).  However, SGD does not like correlated updates.  This causes instability in the gradients, going to infinity or 0.
+
+#### Exploding and vanishing gradients
+For gradients that go to infiniti, a simple hack is gradient clipping.
+
+$$$ \Delta W \leftarrow \Delta W \left(\frac{\Delta_\max}{\max(|\Delta W|,\Delta_\max)}\right) $$$
+
+Gradients that go to 0 are a problem because it means the distant past is not used in classification.  Need to address this problem in a different way.
+
+#### LSTM
+LSTM = long short-term memory.  LSTM's replace a neural net with a 'cell.'
+
+#### Memory Cell
+Memory is `M` matrix of values
+`X` is input which may be written to `M`, depending on gate
+`Y` is output which may be read from `M`, depending on gate
+Another gate determines whether `M` is retained
+
+#### LTSM Cell
+Now imagine each gate is not binary, but $\in [0.0, 1.0]$
+
+and is differentiable and continuous (i.e. sigmoid function).  Then we are able to back propragate through it.
+
 
 Notes taken by [@KT12](https://github.com/KT12)
