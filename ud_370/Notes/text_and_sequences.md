@@ -65,5 +65,15 @@ Now imagine each gate is not binary, but $\in [0.0, 1.0]$
 
 and is differentiable and continuous (i.e. sigmoid function).  Then we are able to back propragate through it.
 
+#### LTSM Cell 2
+Gates are each controlled by logistic regression.  There is an additional $tanh \in [-1.0, 1.0]$
+before the output gate.  Every step is continuous and differentiable.  Optimization is much easier as gradient vanishing doesn't occur.  LSTM helps the recurrent network can remember what it needs and discard what it doesn't.
+
+#### Regularization
+L2 reg works.
+Dropout regularization works, but only on the input and outputs.  Do not use it on the recurrent connections.
+
+### Beam Search
+Applications of RNN?  Can predict consecutive words or letters.  Naive prediction would choose the next most likely element.  Instead, can sample multiple times and choose the sequence with the greatest possibility.  Prevents making one bad decision and being stuck with it.  However, the solution space is very large, so better to prune and only keep the most likely candidates.
 
 Notes taken by [@KT12](https://github.com/KT12)
