@@ -118,3 +118,36 @@ print(batches2string(train_batches.next()))
 print(batches2string(train_batches.next()))
 print(batches2string(valid_batches.next()))
 print(batches2string(valid_batches.next()))
+
+# Show shape or content of variables to understand structure
+
+print(train_batches.next()[1].shape)
+print(len(train_text) // _batch_size)
+print(len(string.ascii_lowercase))
+print(np.zeros(shape=(2,4), dtype=np.float))
+
+def logprob(predictions, labels):
+	# Log prob of true labels in a predicted batch
+	predictions[predictions < 1e-10] = 1e-10
+	return np.sum(np.multiply(labels, -np.log(predictions))) / labels.shape[0]
+
+def sample_distribution(distribution):
+	# Sample 1 element from distribution assumed to be array of normalized probs
+	r = random.uniform(0, 1)
+	s = 0
+	for i in range(len(distribution)):
+		s += distribution[i]
+		if s >= r:
+			return i
+	return len(distribution) - 1
+
+def sample(prediction):
+	# Turn a (col) prediction into 1 hot encoded samples
+	p = np.zeros(shape=[1, vocabulary_size], dtype=np.float)
+	p[0, sample_distribution(prediction[0])] = 1.0
+	return p
+
+def random_distribution():
+	# Generate random column of probabilities
+	b = np.random.uniform(0.0, 1.0, size=[1, vocabulary_size])
+	return b / np.sum(b,1)[:,None]
