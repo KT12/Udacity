@@ -151,3 +151,15 @@ def random_distribution():
 	# Generate random column of probabilities
 	b = np.random.uniform(0.0, 1.0, size=[1, vocabulary_size])
 	return b / np.sum(b,1)[:,None]
+
+# Simple LSTM model
+
+graph = tf.Graph()
+
+with graph.as_default():
+
+	tf.set_random_seed(1)
+
+	# Parameters
+
+	# INput gate: input, previous output, and bias
