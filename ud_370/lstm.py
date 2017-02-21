@@ -251,3 +251,73 @@ with graph.as_default():
 		saved_sample_state.assign(sample_state)]):
 		sample_prediction = tf.nn.softmax(tf.nn.wx_plus_b(sample_output, w, b))
 
+# Run the analysis
+
+num_steps = 7001
+summary_frequency = 100
+
+with tf.Session(graph=graph) as session:
+	tf.initialize_all_variables().run()
+	print('Initialized')
+	mean_loss = 0
+	for step in range(num_steps):
+		batches = train_batches.next()
+		feed_dict = dict()
+		for i in range(num_unrollings + 1):
+			feed_dict[train_data[i]] = batches[i]
+		_, l, predictions, lr = session.run([optimizer, loss,
+			train_prediction, learning_rate], feed_dict=feed_dict)
+		mean_loss += l
+		if step % summary_frequency == 0:
+			if step > 0:
+				mean_loss = mean_loss / summary_frequency
+			# The mean loss is an est of loss over last few batches
+			print('Average loss at step %d: %f learning rate: %f' \
+					% (step, mean_loss, lr))
+			mean_loss = 0
+			labels = np.concatenate(list(batches)[1:])
+			print('Minibatch perplexity: %.2f' % float(np.exp(logprob(predictions,
+				labels))))
+			if step % (summary_frequency * 10) == 0:
+				# Generate samples
+				print('=' * 80)
+				for _ in range(5):
+					feed = sample(random_distribution())
+					sentence = characters(feed)[0]
+					reset_sample_state.run()
+					for _ in range(79):
+						prediction = sample_prediction.eval({sample_input:feed})
+						feed = sample(prediction)
+						sentence += characters(feed)[0]
+					print(sentence)
+				print('=' * 80)
+			# Measure validation set perplexity
+			reset_sample_state.run()
+			valid_logprob = 0
+			for _ in range(valid_size):
+				b = valid_batches.next()
+				predictions = sample_prediction.eval({sample_input:b[0]})
+				valid_logprob = valid_logprob + logprob(predictions, b[1])
+			print('Validation set perplexity: %.2f' % float(np.exp(
+				valid_logprob / valid_size)))
+
+# Problem 1
+# Simplify expression of LSTM cell
+
+num_nodes = 64
+
+graph = tf.Graph()
+with graph.as_default():
+
+	tf.set_random_seed(1)
+
+	# Parameters
+	# Input gate: input, previous output, and bias
+	ix = tf.Variable(tf.truncated_normal([vocabulary_size, num_nodes], -0.1, 0.1))
+	im = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	ib = tf.Variable(tf.zeros([1, num_nodes]))
+
+	#Forget gate: input, previous_output, and bias
+	fx = tf.Variable(tf.truncated_normal([vocabulary_size, num_nodes], -0.1, 0.1))
+	fm = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	fb = tf.Variable(tf.zeros([1, num_nodes]))
