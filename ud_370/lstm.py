@@ -355,3 +355,43 @@ with graph.as_default():
 		output_gate = tf.sigmoid(smatmul_output)
 		state = forget_gate * state + input_gate * tf.tanh(update)
 		return output_gate * tf.tanh(state), state
+
+	# Input data
+	train_data = list()
+	for _ in range(num_unrollings + 1):
+		train_data.append(tf.placeholder(tf.float32, shape=[batch_size,
+			vocabulary_size]))
+	train_inputs = train_data[:num_unrollings]
+	train_labels = train_data[1:]
+
+	# Unrolled LSTM loop
+	outputs = list()
+	output = saved_output
+	state = saved_state
+	for i in train_inputs:
+		output, state = lstm_cell(i, output, state)
+		outputs.append(output)
+
+	# State saving across unrollings
+	with tf.control_dependencies([saved_output.assign(output),
+		saved_state.assign(state)]):
+		# Classifier
+		logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
+		loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits,
+			tf.concat(0, train_labels)))
+	
+	# Optimizer
+	global_step = tf.Variable(0)
+	learning_rate = tf.trian.exponential_decay(10.0, global_step, 5000, 0.1,
+		staircase=True)
+	optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+	gradients, v = zip(*optimizer.compute_gradients(loss))
+	gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
+	optimizer = optimizer.apply_gradients(zip(gradients, v),
+		global_step=global_step)
+	
+	# Predictions
+	train_prediction = tf.nn.softmax(logits)
+
+	# Sampling and validation
+	
