@@ -239,7 +239,7 @@ with graph.as_default():
 	train_prediction = tf.nn.softmax(logits)
 
 	# Sampling and validation eval: batch 1, no unrolling
-	sample_input = tf.placeholder(tf.float32, shape=p1, vocabulary_size)
+	sample_input = tf.placeholder(tf.float32, shape=[p1, vocabulary_size])
 	saved_sample_output = tf.Variable(tf.zeros([1, num_nodes]))
 	saved_sample_state = tf.Variable(tf.zeros[1, num_nodes])
 	reset_sample_state = tf.group(
@@ -321,3 +321,37 @@ with graph.as_default():
 	fx = tf.Variable(tf.truncated_normal([vocabulary_size, num_nodes], -0.1, 0.1))
 	fm = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
 	fb = tf.Variable(tf.zeros([1, num_nodes]))
+
+	# Memory cell: input, state, and bias
+	cx = tf.Variable(tf.truncated_normal(tf.truncated_normal([vocabulary_size, num_nodes], -0.1, 0.1)))
+	cm = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	cb = tf.Variable(tf.zeros([1, num_nodes]))
+
+	# Output gate: input, previous output, and bias
+	ox = tf.Variable(tf.truncated_normal([vocabulary_size, num_nodes], -0.1, 0.1))
+	om = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	ob = tf.Variable(tf.zeros([1, num_nodes]))
+
+	# Concatenate parameters
+	sx = tf.concat(1, [ix, fx, cx, ox])
+	sm = tf.concat(1, [im, fm, cm, om])
+	sb = tf.concat(1, [ib, fb, cb, ob])
+
+	# Variables saving state across unrollings
+	saved_output = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
+	saved_state = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
+
+	# Classifier weights and biases
+	w = tf.Variable(tf.truncated_normal([num_nodes, vocabulary_size], -0.1, 0.1))
+	b = tf.Variable(tf.zeros([vocabulary_size]))
+
+	# Def of cell computation
+	def lstm_cell(i, o, state):
+		smatmul = tf.matmul(i, sx) + tf.matmul(o, sm) + sb
+		smatmul_input, smatmul_forget, update, smatmul_output = tf.split(1,
+			 4, smatmul)
+		input_gate = tf.sigmoid(smatmul_input)
+		forget_gate = tf.sigmoid(smatmul_forget)
+		output_gate = tf.sigmoid(smatmul_output)
+		state = forget_gate * state + input_gate * tf.tanh(update)
+		return output_gate * tf.tanh(state), state
