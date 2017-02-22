@@ -394,4 +394,33 @@ with graph.as_default():
 	train_prediction = tf.nn.softmax(logits)
 
 	# Sampling and validation
+	sample_input = tf.placeholder(tf.float32, shape=[1, vocabulary_size])
+	saved_sample_output = tf.Variable(tf.zeros([1, num_nodes]))
+	saved_sample_state = tf.Variable(tf.zeros([1, num_nodes]))
+	reset_sample_state = tf.group(saved_sample_output.assign(tf.zeros([1, num_nodes])),
+		saved_sample_state.assign(tf.zeros([1, num_nodes])))
+	sample_output, sample_state = lstm_cell(sample_input, saved_sample_output,
+		saved_sample_state)
 	
+	with tf.control_dependencies([saved_sample_output.assign(sample_output),
+		saved_sample_state.assign(sample_state)]):
+		sample_prediction = tf.nn.softmax(tf.nn.xw_plus_b(sample_output, w, b))
+	
+num_steps = 7001
+summary_frequency = 100
+
+with tf.Session(graph=graph) as session:
+	tf.initialize_all_variables().run()
+	print('Initialized')
+	mean_loss = 0
+	for step in range(num_steps):
+		batches = train_batches.next()
+		feed_dict = dict()
+		for i in range(num_unrollings + 1):
+			feed_dict[train_data[i]] = batches[i]
+		_, l, predictions, lr = session.run([optimizer, loss, train_prediction,
+			learning_rate], feed_dict=feed_dict)
+		mean_loss += l
+		if step%summary_frequency == 0:
+			if step > 0:
+				mean_loss = mean_loss / summary_frequency
