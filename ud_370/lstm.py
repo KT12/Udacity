@@ -424,3 +424,32 @@ with tf.Session(graph=graph) as session:
 		if step%summary_frequency == 0:
 			if step > 0:
 				mean_loss = mean_loss / summary_frequency
+			# Mean loss is est for loss over the last few batches
+			print('Average loss at step %d: %f learning rate: %f' % (step,
+				mean_loss, lr))
+			mean_loss = 0
+			labels = np.concatenate(list(batches)[1:])
+			print('Minibatch perplexity: %.2f' % float(np.exp(logprob(predictions,
+				labels))))
+			if step % (summary_frequency * 10) == 0:
+				# Generate some samples
+				print('=' * 80)
+				for _ in range(5):
+					feed = sample(random_distribution())
+					sentence = characters(feed)[0]
+					reset_sample_state.run()
+					for _ in range(79):
+						prediction = sample_prediction.eval({sample_input:feed})
+						feed = sample(prediction)
+						sentence += characters(feed)[0]
+					print(sentence)
+				print('=' * 80)
+			# Measure valid set perplexity
+			reset_sample_state.run()
+			valid_logprob = 0
+			for _ in range(valid_size):
+				b = valid_batches.next()
+				predictions = sample_prediction.eval({sample_input:b[0]})
+				valid_logprob = valid_logprob + logprob(predictions, b[1])
+			print('Validation set perplexity: %.2f' % float(np.exp(
+					valid_logprob / valid_size)))
