@@ -453,3 +453,48 @@ with tf.Session(graph=graph) as session:
 				valid_logprob = valid_logprob + logprob(predictions, b[1])
 			print('Validation set perplexity: %.2f' % float(np.exp(
 					valid_logprob / valid_size)))
+
+# Problem 2
+# Implement an embedding lookup and feed the embeddings to the LSTM cell
+# instead of the inputs themselves
+
+embedding_size = 128 # Dim of embedding vector
+num_nodes = 64
+
+graph = tf.Graph()
+with graph.as_default():
+
+	# Set random seed
+	tf.set_random_seed(1)
+
+	# Parameters:
+	vocabulary_embeddings = tf.Variable(tf.random_uniform([vocabulary_size,
+		embedding_size], -1.0, 1.0))
+	
+	# Input gate: input, previous input, and bias
+	ix = tf.Variable(tf.truncated_normal([embedding_size, num_nodes], -0.1, 0.1))
+	im = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	ib = tf.Variable(tf.zeros(1, num_nodes))
+
+	# Forget gate: input, previous output, and bias
+	fx = tf.Variable(tf.truncated_normal([embedding_size, num_nodes], -0.1, 0.1))
+	fm = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	fb = tf.Variable(tf.zeros([1, num_nodes]))
+
+	# Memory cell: input, state, and bias
+	cx = tf.Variable(tf.truncated_normal([embedding_size, num_nodes], -0.1, 0.1))
+	cm = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	cb = tv.Variable(tf.zeros([1, num_nodes]))
+
+	# Output gate: input, previous output, and bias
+	ox = tf.Variable(tf.truncated_normal([embedding_size, num_nodes], -0.1, 0.1))
+	om = tf.Variable(tf.truncated_normal([num_nodes, num_nodes], -0.1, 0.1))
+	ob = tf.Variable(tf.zeros([1, num_nodes]))
+		
+	# Variables saving state across unrollings
+	saved_output = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
+	saved_state = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
+
+	# Classifier weights and biases
+	w = tf.Variable(tf.truncated_normal([num_nodes, vocabulary_size], -0.1, 0.1))
+	b = tf.Variable(tf.zeros([vocabulary_size]))
