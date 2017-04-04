@@ -74,6 +74,16 @@ L2 reg works.
 Dropout regularization works, but only on the input and outputs.  Do not use it on the recurrent connections.
 
 ### Beam Search
-Applications of RNN?  Can predict consecutive words or letters.  Naive prediction would choose the next most likely element.  Instead, can sample multiple times and choose the sequence with the greatest possibility.  Prevents making one bad decision and being stuck with it.  However, the solution space is very large, so better to prune and only keep the most likely candidates.
+Applications of RNN?  Can predict consecutive words or letters.  Naive prediction would choose the next most likely element.  Instead, can sample multiple times and choose the sequence with the greatest possibility.  Sequence of predict/sample/predict/sample ... results in multiple hypothesis.  Choose most likely sequence.
 
+Prevents making one bad decision and being stuck with it.  However, the solution space is very large, so better to prune and only keep the most likely candidates.  Beam search works well in practice.
+
+### Play Legos
+Sequence models allow you to 'play legos.'  Mix and match and use back prop to optimize.
+
+### Captioning and Translation
+RNN's allow variable length sequences to fixed length vectors.  Can also map fixed length vectors to variable length sequences.  Applications include machine translation or speech recognition.  Require a lot of data and compute time.
+
+### Outro
+Don't need very specific info on problem - just need lots of computers and data.
 Notes taken by [@KT12](https://github.com/KT12)
